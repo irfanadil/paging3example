@@ -8,13 +8,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.demo.characterdemoapp.databinding.AdapterMovieBinding
 
-
-class CharacterPagerAdapter: PagingDataAdapter<CharacterDetail, CharacterPagerAdapter.CharacterViewHolder>(CharacterComparator) {
+class CharacterPagerAdapter :
+    PagingDataAdapter<CharacterDetail, CharacterPagerAdapter.CharacterViewHolder>(
+        CharacterComparator
+    ) {
 
     override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) {
-        val character = getItem(position)!!
-        holder.view.name.text = character.name
-        Glide.with(holder.itemView.context).load(character.image).into(holder.view.imageview)
+        val character = getItem(position)
+        character?.let {
+            holder.view.name.text = it.name
+            Glide.with(holder.itemView.context).load(it.image).into(holder.view.imageview)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharacterViewHolder {
@@ -23,9 +27,7 @@ class CharacterPagerAdapter: PagingDataAdapter<CharacterDetail, CharacterPagerAd
         return CharacterViewHolder(binding)
     }
 
-    class CharacterViewHolder(val view: AdapterMovieBinding): RecyclerView.ViewHolder(view.root) {
-
-    }
+    class CharacterViewHolder(val view: AdapterMovieBinding) : RecyclerView.ViewHolder(view.root)
 
     object CharacterComparator : DiffUtil.ItemCallback<CharacterDetail>() {
         override fun areItemsTheSame(oldItem: CharacterDetail, newItem: CharacterDetail) =

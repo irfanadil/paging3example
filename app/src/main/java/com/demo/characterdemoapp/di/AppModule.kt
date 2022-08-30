@@ -1,7 +1,5 @@
 package com.demo.characterdemoapp
 
-
-
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,34 +15,32 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class AppModule {
 
+    @Provides
+    @Singleton
+    fun provideOkHttp(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .retryOnConnectionFailure(true)
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                this.level = HttpLoggingInterceptor.Level.BODY
+            })
+            .build()
+    }
 
-        @Provides
-        @Singleton
-        fun provideOkHttp():OkHttpClient {
-            return OkHttpClient.Builder()
-                .retryOnConnectionFailure(true)
-                .connectTimeout(60,TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
-                .addInterceptor(HttpLoggingInterceptor().apply { this.level = HttpLoggingInterceptor.Level.BODY })
-                //.addNetworkInterceptor(networkInterceptor)
-                .build()
-        }
+    @Provides
+    @Singleton
+    fun retrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
 
-        @Provides
-        @Singleton
-        fun retrofit(okHttpClient: OkHttpClient): Retrofit {
-            return Retrofit.Builder()
-                .baseUrl(BuildConfig.BASE_URL) // Hide base url in local properties
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-        }
-
-        @Provides
-        @Singleton
-        fun appServices(retrofit: Retrofit): ServerApi = retrofit.create(ServerApi::class.java)
-
-
+    @Provides
+    @Singleton
+    fun appServices(retrofit: Retrofit): ServerApi = retrofit.create(ServerApi::class.java)
 }
 

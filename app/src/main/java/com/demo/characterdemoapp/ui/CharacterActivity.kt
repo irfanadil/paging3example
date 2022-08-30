@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.demo.characterdemoapp.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -17,7 +16,6 @@ class CharacterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val adapter = CharacterPagerAdapter()
     private val viewModel: CharactersViewModel by viewModels()
-    private lateinit var linearLayoutManager:LinearLayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
